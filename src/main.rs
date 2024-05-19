@@ -3,9 +3,6 @@ use std::io;
 // use serde;
 // use serde_json;
 
-
-
-
 fn main()   {
     println!("type what you want to add to the list");
     println!();
