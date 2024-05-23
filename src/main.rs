@@ -1,10 +1,12 @@
 use core::panic;
 use std::io;
-// use serde;
-// use serde_json;
+use serde;
+use serde_json;
+use std::fs
 
-
-
+enum list {
+    
+}
 
 fn main()   {
     println!("type what you want to add to the list");
@@ -80,3 +82,15 @@ fn display_list(list: &[String]) {
         println!("{} {}", x.0, x.1);
     }
 }
+fn save_list(list)-> Vec<String> {
+    
+    let list_in_json = serde_json::from_str(&list);
+
+
+    
+}
+
+pub fn create_file_write(file_path: serde_json, list: [vec]){
+    fs::write(file_path, list).unwrap();
+ }
+
