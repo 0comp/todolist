@@ -1,12 +1,6 @@
 use core::panic;
 use std::io;
-use serde;
-use serde_json;
-use std::fs
-
-enum list {
-    
-}
+use std::fs;
 
 fn main()   {
     println!("type what you want to add to the list");
@@ -17,7 +11,9 @@ fn main()   {
     println!();
     println!("type \"save\" to save the list");
     println!();
-    let  list = get_list();
+    println!("type \"load list\" to load the saved list");
+    println!();
+    let  list: Vec<String> = get_list();
 
     
     dbg!(&list);
@@ -34,20 +30,25 @@ fn get_list() -> Vec<String> {
         io::stdin()
             .read_line(&mut get_item)
             .expect("Failed to read line");
-        get_item= get_item.replace("\r", "").replace("\n", "");
+        get_item = get_item.replace("\r", "").replace("\n", "");
         
-        if get_item == "save" {
+        if get_item == "save" || get_item == "save list" {
             println!("saving your list");
-            return list
+            let _ = save_list(&list);
+            continue
         }
         if get_item == "stop" {
             panic!("told_to_stop")
         }
-        if get_item == "show list"{
-        
+        if get_item == "show list" || get_item == "show" {
             display_list(&list);
-          
-            continue;
+            println!("showing your list");
+            continue
+        }
+        if get_item == "load list" || get_item == "load" {
+            list = read_file();
+            println!("loading your list");
+            continue
         }
 
         if let Some(variabel) = get_item.strip_prefix("remove ") {
@@ -82,15 +83,14 @@ fn display_list(list: &[String]) {
         println!("{} {}", x.0, x.1);
     }
 }
-fn save_list(list)-> Vec<String> {
+fn save_list(list: &Vec<String>) -> io::Result<Vec<String>> {
+    fs::write("./todolist", serde_json::to_string(&list).unwrap())?;
     
-    let list_in_json = serde_json::from_str(&list);
-
-
-    
+    return Ok(list.clone())
 }
 
-pub fn create_file_write(file_path: serde_json, list: [vec]){
-    fs::write(file_path, list).unwrap();
- }
+fn read_file()-> Vec<String> {
+    let list = String::from_utf8(std::fs::read("./todolist").unwrap()).unwrap();
 
+    serde_json::from_str(&list).unwrap()
+}
